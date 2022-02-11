@@ -62,9 +62,6 @@ export function track(target, key) {
     depsMap.set(key, dep);
   }
 
-  // if (!activeEffect) return;
-  // // 如果调用了stop函数，则直接return，不需要再进行依赖收集
-  // if (!shouldTrack) return;
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }

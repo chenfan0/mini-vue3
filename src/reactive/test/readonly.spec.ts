@@ -21,4 +21,13 @@ describe("redonly", () => {
     expect(console.warn).toBeCalled();
     expect(isReadonly(user)).toBe(true);
   });
+
+  it("nested readonly", () => {
+    const obj = readonly({
+      foo: {
+        age: 10,
+      },
+    });
+    expect(isReadonly(obj.foo)).toBe(true);
+  });
 });
