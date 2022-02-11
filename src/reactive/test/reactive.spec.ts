@@ -1,3 +1,4 @@
+import { effect } from "../effect";
 import { reactive, isReactive } from "../reactive";
 
 describe("reactive", () => {
@@ -19,7 +20,13 @@ describe("reactive", () => {
       },
       bar: 10,
     });
+    let dummy;
+    effect(() => {
+      dummy = obj.foo;
+    });
     expect(isReactive(obj.foo)).toBe(true);
+    obj.foo = 1;
+    expect(dummy).toBe(1);
     expect(obj.bar).toBe(10);
   });
 });
