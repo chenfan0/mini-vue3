@@ -1,5 +1,5 @@
 import { effect } from "../effect";
-import { reactive, isReactive } from "../reactive";
+import { reactive, isReactive, isProxy } from "../reactive";
 
 describe("reactive", () => {
   it("happy path", () => {
@@ -12,6 +12,8 @@ describe("reactive", () => {
     expect(proxyObj.age).toBe(19);
     expect(isReactive(proxyObj)).toBe(true);
     expect(isReactive(obj)).toBe(false);
+    expect(isProxy(obj)).toBe(false);
+    expect(isProxy(proxyObj)).toBe(true);
   });
   it("nest reactive", () => {
     const obj = reactive({

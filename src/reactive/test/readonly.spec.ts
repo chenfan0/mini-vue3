@@ -1,4 +1,4 @@
-import { isReadonly, readonly, shallowReadonly } from "../reactive";
+import { isProxy, isReadonly, readonly, shallowReadonly } from "../reactive";
 
 describe("redonly", () => {
   it("happy path", () => {
@@ -7,6 +7,8 @@ describe("redonly", () => {
     expect(wrapped).not.toBe(original);
     expect(wrapped.foo).toBe(1);
     expect(isReadonly(original)).toBe(false);
+    expect(isProxy(wrapped)).toBe(true);
+    expect(isProxy(original)).toBe(false);
   });
 
   it("warn when call set", () => {
