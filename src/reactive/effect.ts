@@ -1,6 +1,7 @@
 import { extend } from "../shared";
 
 let activeEffect: ReactiveEffect;
+let shouldTrack;
 const targetMap = new WeakMap();
 
 class ReactiveEffect {
@@ -21,7 +22,13 @@ class ReactiveEffect {
 
   run() {
     activeEffect = this;
-    return this._fn();
+    if (!this.active) {
+      return this._fn();
+    }
+    shouldTrack = true;
+    const res = this._fn();
+    shouldTrack = false;
+    return res;
   }
 
   stop() {
@@ -37,9 +44,13 @@ function cleanupEffect(effect: ReactiveEffect) {
   effect.deps.forEach((dep) => {
     dep.delete(effect);
   });
+  // 清空effect.deps
+  effect.deps.length = 0;
 }
 
 export function track(target, key) {
+  if (!isTracking()) return;
+
   let depsMap = targetMap.get(target);
   if (!depsMap) {
     depsMap = new Map();
@@ -50,13 +61,21 @@ export function track(target, key) {
     dep = new Set();
     depsMap.set(key, dep);
   }
-  if (!activeEffect) return;
+
+  // if (!activeEffect) return;
+  // // 如果调用了stop函数，则直接return，不需要再进行依赖收集
+  // if (!shouldTrack) return;
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
 
+function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
+
 export function trigger(target, key) {
   const depsMap = targetMap.get(target);
+  if (!depsMap) return;
   const dep = depsMap.get(key);
 
   for (const effect of dep) {
