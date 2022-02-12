@@ -8,6 +8,7 @@ class RefImplement {
   private deps;
   private _rawValue;
   public __v_isRef = true;
+
   constructor(value) {
     this._rawValue = value;
     this._value = convert(value);
