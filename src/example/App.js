@@ -8,9 +8,11 @@ export const App = {
     };
   },
   render() {
-    return h("div", { class: "red" }, [
-      h("p", { class: "p" }, "hello"),
-      h("h1", { class: "h1" }, "mini-vue"),
-    ]);
+    window.self = this;
+    // [
+    //   h("p", { class: "p" }, "hello"),
+    //   h("h1", { class: "h1" }, "mini-vue"),
+    // ]
+    return h("div", { class: "red" }, "hello " + this.msg);
   },
 };
