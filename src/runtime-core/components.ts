@@ -2,21 +2,27 @@ import { isObject } from "../shared/index";
 import { publicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initProps } from "./componentProps";
 import { shallowReadonly } from "../reactive/reactive";
+import { emit } from "./componentEmit";
 
 export function createComponentInstance(vnode) {
   const component = {
     vnode,
     type: vnode.type,
     setupState: {},
+    props: {},
+    emit: () => {},
   };
+
+  component.emit = emit.bind(null, component) as any;
 
   return component;
 }
 
 export function setupComponent(instance) {
   const rawProps = instance.vnode.props;
-  // TODO
+
   initProps(instance, rawProps);
+  // TODO
   // initSlots()
   setupStatefulComponent(instance);
 }
@@ -24,6 +30,7 @@ export function setupComponent(instance) {
 function setupStatefulComponent(instance) {
   const component = instance.type;
   const props = instance.vnode.props;
+  const emit = instance.emit;
 
   // ctx 代理
   instance.proxy = new Proxy({ _: instance }, publicInstanceProxyHandlers);
@@ -31,7 +38,7 @@ function setupStatefulComponent(instance) {
   const { setup } = component;
 
   if (setup) {
-    const setupResult = setup(shallowReadonly(props));
+    const setupResult = setup(shallowReadonly(props), { emit });
     handleSetupResult(instance, setupResult);
   }
 }
