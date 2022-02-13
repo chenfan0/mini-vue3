@@ -1,4 +1,4 @@
-import { h } from "../../../lib/mini-vue.esm.js";
+import { h, createTextVNode } from "../../../lib/mini-vue.esm.js";
 import Foo from "./Foo.js";
 
 export default {
@@ -6,6 +6,9 @@ export default {
   render() {
     const header = (props) => h("p", {}, "header" + props);
     const footer = (props) => h("p", {}, "footer" + props);
-    return h("div", {}, [h("div", {}, "App"), h(Foo, {}, { header, footer })]);
+    return h("div", {}, [
+      createTextVNode("你好"),
+      h(Foo, {}, { header, footer }),
+    ]);
   },
 };
