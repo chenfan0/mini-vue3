@@ -1,4 +1,5 @@
 import { h } from "../../lib/mini-vue.esm.js";
+import { Foo } from "./Foo.js";
 
 export const App = {
   setup() {
@@ -21,7 +22,7 @@ export const App = {
           console.log("click");
         },
       },
-      "hello " + this.msg
+      [h("div", {}, "mini-vue"), h(Foo, { age: 18 })]
     );
   },
 };

@@ -1,5 +1,7 @@
 import { isObject } from "../shared/index";
 import { publicInstanceProxyHandlers } from "./componentPublicInstance";
+import { initProps } from "./componentProps";
+import { shallowReadonly } from "../reactive/reactive";
 
 export function createComponentInstance(vnode) {
   const component = {
@@ -12,21 +14,24 @@ export function createComponentInstance(vnode) {
 }
 
 export function setupComponent(instance) {
+  const rawProps = instance.vnode.props;
   // TODO
-  // initProps()
+  initProps(instance, rawProps);
   // initSlots()
   setupStatefulComponent(instance);
 }
 
 function setupStatefulComponent(instance) {
   const component = instance.type;
+  const props = instance.vnode.props;
+
   // ctx 代理
   instance.proxy = new Proxy({ _: instance }, publicInstanceProxyHandlers);
 
   const { setup } = component;
 
   if (setup) {
-    const setupResult = setup();
+    const setupResult = setup(shallowReadonly(props));
     handleSetupResult(instance, setupResult);
   }
 }
