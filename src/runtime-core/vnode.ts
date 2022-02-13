@@ -10,8 +10,10 @@ export function createVNode(type, props?, children?) {
   };
 
   if (Array.isArray(children)) {
+    // 子节点为数组
     vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN;
   } else {
+    // 子节点为text类型
     vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN;
   }
   return vnode;

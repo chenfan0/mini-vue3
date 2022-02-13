@@ -13,6 +13,15 @@ export const App = {
     //   h("p", { class: "p" }, "hello"),
     //   h("h1", { class: "h1" }, "mini-vue"),
     // ]
-    return h("div", { class: "red" }, "hello " + this.msg);
+    return h(
+      "div",
+      {
+        class: "red",
+        onClick: () => {
+          console.log("click");
+        },
+      },
+      "hello " + this.msg
+    );
   },
 };

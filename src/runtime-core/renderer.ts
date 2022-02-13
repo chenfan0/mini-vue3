@@ -8,6 +8,7 @@ export function render(vnode, container) {
 
 function patch(vnode, container) {
   const { shapeFlag } = vnode;
+
   if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container);
   } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
@@ -41,12 +42,20 @@ function processElement(vnode, container) {
 
 function mountElement(vnode, container) {
   const { type, props, children, shapeFlag } = vnode;
-  // create element
+  // 创建DOM节点
   const el = (vnode.el = document.createElement(type));
 
   // handle props
-  for (const prop in props) {
-    el.setAttribute(prop, props[prop]);
+  // 如果key为 on开头并且on后面的第一个字符为大写，则认定为事件监听
+  const isOn = (key: string) => /^on[A-Z]/.test(key);
+  for (const key in props) {
+    // 处理事件
+    if (isOn(key)) {
+      const event = key.slice(2).toLocaleLowerCase();
+      el.addEventListener(event, props[key]);
+    } else {
+      el.setAttribute(key, props[key]);
+    }
   }
 
   // handle children
