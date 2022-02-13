@@ -12,6 +12,10 @@ export function hasOwn(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
+export function isArray(value) {
+  return Array.isArray(value);
+}
+
 // foo-add => fooAdd
 export const camelize = (str: string) => {
   return str.replace(/-(\w)/g, (_, p: string) => {
