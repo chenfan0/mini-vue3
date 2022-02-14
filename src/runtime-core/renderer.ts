@@ -1,4 +1,3 @@
-import { isObject } from "../shared/index";
 import { createComponentInstance, setupComponent } from "./components";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { Fragment, Text } from "./vnode";

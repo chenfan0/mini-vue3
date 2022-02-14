@@ -5,6 +5,8 @@ import { shallowReadonly } from "../reactive/reactive";
 import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlots";
 
+let currentInstance = null;
+
 export function createComponentInstance(vnode) {
   const component = {
     vnode,
@@ -40,7 +42,9 @@ function setupStatefulComponent(instance) {
   const { setup } = component;
 
   if (setup) {
+    setCurrentInstance(instance);
     const setupResult = setup(shallowReadonly(props), { emit });
+    setCurrentInstance(null);
     handleSetupResult(instance, setupResult);
   }
 }
@@ -62,4 +66,12 @@ function finishComponentSetup(instance) {
   if (component.render) {
     instance.render = component.render;
   }
+}
+
+export function getCurrentInstance() {
+  return currentInstance;
+}
+
+function setCurrentInstance(instance) {
+  currentInstance = instance;
 }
