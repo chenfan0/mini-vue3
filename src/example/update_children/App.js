@@ -3,7 +3,7 @@ import { h, ref } from "../../../lib/mini-vue.esm.js";
 // 老的是数组，新的是文本
 const text = h("div", {}, "text");
 const text1 = h("div", {}, "text1");
-const array = h("div", {}, [h("div", {}, "arr1")]);
+const array = h("div", {}, [h("div", {}, "arr1"), h("div", {}, "arr2")]);
 // 旧子节点是数组，新子节点是文本
 const ArrayToText = {
   setup() {
