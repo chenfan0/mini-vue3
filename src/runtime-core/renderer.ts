@@ -10,6 +10,8 @@ export function createRenderer(options) {
     createElement: hostCreateElement,
     patchProps: hostPatchProps,
     insert: hostInsert,
+    remove: hostRemove,
+    setElementText: hostSetElementText,
   } = options;
 
   function render(vnode, container, parent) {
@@ -79,7 +81,7 @@ export function createRenderer(options) {
     if (!n1) {
       mountElement(n2, container, parent);
     } else {
-      patchElement(n1, n2);
+      patchElement(n1, n2, parent);
     }
   }
 
@@ -102,16 +104,50 @@ export function createRenderer(options) {
     hostInsert(el, container);
   }
 
-  function patchElement(n1, n2) {
-    // props
-
+  function patchElement(n1, n2, parent) {
+    // p1 oldProps, p2 newProps
     const p1 = n1.props || EMPTY_OBJ;
     const p2 = n2.props || EMPTY_OBJ;
-
     // 将el赋值给n2，因为下次patch n2就是n1
     const el = (n2.el = n1.el);
 
+    patchChildren(n1, n2, parent);
+
     patchProps(p1, p2, el);
+  }
+
+  function patchChildren(n1, n2, parent) {
+    const c1 = n1.children;
+    const c2 = n2.children;
+    const el = n1.el;
+    const prevShapeFlag = n1.shapeFlag;
+    const { shapeFlag } = n2;
+
+    if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+      if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+        // 新节点children是文本类型, 旧节点children是数组类型
+        unmountChildren(n1);
+        hostSetElementText(el, c2);
+      }
+    } else {
+      if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        // 新节点children是数组类型，旧节点children是文本类型
+        hostSetElementText(el, "");
+        mountChildren(n2, el, parent);
+      } else {
+        // 新旧节点children类型都是文本类型
+        if (c1 !== c2) {
+          hostSetElementText(el, c2);
+        }
+      }
+    }
+  }
+
+  function unmountChildren(vnode) {
+    vnode.children.forEach((v) => {
+      const el = v.el;
+      hostRemove(el);
+    });
   }
 
   function patchProps(oldProps, newProps, el) {

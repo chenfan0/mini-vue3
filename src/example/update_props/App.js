@@ -45,6 +45,7 @@ export const App = {
     };
   },
   render() {
+    // patch props demo
     return h("div", { ...this.attr }, [
       h("div", {}, "count " + this.count),
       h("button", { onClick: this.onClick }, "click"),
@@ -53,6 +54,5 @@ export const App = {
       h("button", { onClick: this.add }, "添加属性"),
       h("button", { onClick: this.remove }, "删除属性"),
     ]);
-    // return h("button", { onClick: this.add, ...this.attr }, "添加属性");
   },
 };
