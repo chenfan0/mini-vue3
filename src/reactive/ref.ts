@@ -39,6 +39,7 @@ export function ref(value) {
 }
 
 export function isRef(ref) {
+  if (!ref) return false;
   return !!ref.__v_isRef;
 }
 

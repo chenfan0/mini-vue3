@@ -4,6 +4,7 @@ import { initProps } from "./componentProps";
 import { shallowReadonly } from "../reactive/reactive";
 import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlots";
+import { proxyRefs } from "../index";
 
 let currentInstance = null;
 
@@ -15,6 +16,8 @@ export function createComponentInstance(vnode, parent) {
     props: {},
     slots: {},
     provides: parent ? parent.provides : {},
+    isMounted: false,
+    subTree: {},
     emit: () => {},
   };
 
@@ -55,7 +58,7 @@ function handleSetupResult(instance, setupResult) {
 
   // 如果返回的是一个对象，会将返回的值注入到instance中
   if (isObject(setupResult)) {
-    instance.setupState = setupResult;
+    instance.setupState = proxyRefs(setupResult);
   }
 
   finishComponentSetup(instance);
