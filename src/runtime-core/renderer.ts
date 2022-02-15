@@ -3,9 +3,14 @@ import { ShapeFlags } from "../shared/ShapeFlags";
 import { Fragment, Text } from "./vnode";
 import { createAppAPI } from "./createApp";
 import { effect } from "../reactive/index";
+import { EMPTY_OBJ } from "../shared/index";
 
 export function createRenderer(options) {
-  const { createElement, patchProps, insert } = options;
+  const {
+    createElement: hostCreateElement,
+    patchProps: hostPatchProps,
+    insert: hostInsert,
+  } = options;
 
   function render(vnode, container, parent) {
     patch(null, vnode, container, parent);
@@ -74,25 +79,62 @@ export function createRenderer(options) {
     if (!n1) {
       mountElement(n2, container, parent);
     } else {
-      console.log("update", "-----------");
+      patchElement(n1, n2);
     }
   }
 
   function mountElement(vnode, container, parent) {
     const { type, props, children, shapeFlag } = vnode;
     // 创建DOM节点
-    const el = (vnode.el = createElement(type));
+    const el = (vnode.el = hostCreateElement(type));
 
-    patchProps(el, props);
+    // 处理props
+    for (const key in props) {
+      hostPatchProps(el, key, props[key]);
+    }
 
-    // handle children
+    // 处理children属性
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
       mountChildren(vnode, el, parent);
     }
-    insert(el, container);
-    // container.appendChild(el);
+    hostInsert(el, container);
+  }
+
+  function patchElement(n1, n2) {
+    // props
+
+    const p1 = n1.props || EMPTY_OBJ;
+    const p2 = n2.props || EMPTY_OBJ;
+
+    // 将el赋值给n2，因为下次patch n2就是n1
+    const el = (n2.el = n1.el);
+
+    patchProps(p1, p2, el);
+  }
+
+  function patchProps(oldProps, newProps, el) {
+    if (oldProps !== newProps) {
+      // 遍历新属性，增加或者修改属性值
+      for (const key in newProps) {
+        const prevProp = oldProps[key];
+        const currentProp = newProps[key];
+
+        if (prevProp !== currentProp) {
+          hostPatchProps(el, key, currentProp);
+        }
+      }
+      // 当旧属性不为空对象时
+      if (oldProps !== EMPTY_OBJ) {
+        // 遍历旧属性，删除旧属性有而新属性没有的属性
+        for (const key in oldProps) {
+          if (!(key in newProps)) {
+            hostPatchProps(el, key, null);
+          }
+        }
+      }
+    }
   }
 
   function mountChildren(vnode, container, parent) {

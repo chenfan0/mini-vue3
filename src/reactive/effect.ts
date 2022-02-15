@@ -81,6 +81,8 @@ export function trigger(target, key) {
 }
 
 export function triggerEffects(dep) {
+  if (!dep) return;
+
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();

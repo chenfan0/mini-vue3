@@ -31,3 +31,5 @@ export const capitalize = (str: string) => {
 export const handleEventName = (name: string) => {
   return name ? "on" + capitalize(name) : "";
 };
+
+export const EMPTY_OBJ = {};

@@ -26,6 +26,7 @@ class RefImplement {
     if (!hasChange(this._rawValue, newValue)) return;
     this._rawValue = newValue;
     this._value = convert(newValue);
+
     triggerEffects(this.deps);
   }
 }
