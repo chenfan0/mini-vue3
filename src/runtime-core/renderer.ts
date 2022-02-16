@@ -4,6 +4,7 @@ import { Fragment, Text } from "./vnode";
 import { createAppAPI } from "./createApp";
 import { effect } from "../reactive/index";
 import { EMPTY_OBJ } from "../shared/index";
+import { shouldUpdateComponent } from "./componentUpdateUtils";
 
 export function createRenderer(options) {
   const {
@@ -15,6 +16,7 @@ export function createRenderer(options) {
   } = options;
 
   function render(vnode, container, parent) {
+    debugger;
     patch(null, vnode, container, parent, null);
   }
 
@@ -32,7 +34,7 @@ export function createRenderer(options) {
         if (shapeFlag & ShapeFlags.ELEMENT) {
           processElement(n1, n2, container, parent, anchor);
         } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-          processComponent(n2, container, parent, anchor);
+          processComponent(n1, n2, container, parent, anchor);
         }
     }
   }
@@ -47,19 +49,36 @@ export function createRenderer(options) {
     container.appendChild(el);
   }
 
-  function processComponent(vnode, container, parent, anchor) {
-    mountComponent(vnode, container, parent, anchor);
+  function processComponent(n1, n2, container, parent, anchor) {
+    if (!n1) {
+      mountComponent(n2, container, parent, anchor);
+    } else {
+      updateComponent(n1, n2);
+    }
   }
 
   function mountComponent(initialVNode, container, parent, anchor) {
-    const instance = createComponentInstance(initialVNode, parent);
+    const instance = (initialVNode.component = createComponentInstance(
+      initialVNode,
+      parent
+    ));
 
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container, anchor);
   }
 
+  function updateComponent(n1, n2) {
+    // 需要把n1.component赋值给n2.component
+    // 不然下次更新n2.component会为null
+    const instance = (n2.component = n1.component);
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2;
+      instance.update();
+    }
+  }
+
   function setupRenderEffect(instance, vnode, container, anchor) {
-    effect(() => {
+    instance.update = effect(() => {
       const { proxy, isMounted } = instance;
       if (!isMounted) {
         const subTree = (instance.subTree = instance.render.call(proxy));
@@ -69,6 +88,13 @@ export function createRenderer(options) {
         vnode.el = subTree.el;
         instance.isMounted = true;
       } else {
+        debugger;
+        // next是新的虚拟节点，vnode是旧的虚拟节点
+        const { next, vnode } = instance;
+        if (next) {
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next);
+        }
         const subTree = instance.render.call(proxy);
         const prevTree = instance.subTree;
         instance.subTree = subTree;
@@ -77,11 +103,17 @@ export function createRenderer(options) {
     });
   }
 
+  function updateComponentPreRender(instance, next) {
+    instance.props = next.props;
+    instance.next = null;
+    instance.vnode = next;
+  }
+
   function processElement(n1, n2, container, parent, anchor) {
     if (!n1) {
       mountElement(n2, container, parent, anchor);
     } else {
-      patchElement(n1, n2, container, parent, anchor);
+      patchElement(n1, n2, parent, anchor);
     }
   }
 
@@ -104,7 +136,7 @@ export function createRenderer(options) {
     hostInsert(el, container, anchor);
   }
 
-  function patchElement(n1, n2, container, parent, anchor) {
+  function patchElement(n1, n2, parent, anchor) {
     // p1 oldProps, p2 newProps
     const p1 = n1.props || EMPTY_OBJ;
     const p2 = n2.props || EMPTY_OBJ;
@@ -251,6 +283,8 @@ export function createRenderer(options) {
         }
       }
 
+      // 返回最长递增子序列的下标，也就是新数组的下标。
+      // 新数组节点的下标在该数组中，则说明不需要移动
       const increasingNewIndexSequence = moved
         ? getSequence(newIndexToOldIndexMap)
         : [];
@@ -263,6 +297,7 @@ export function createRenderer(options) {
         const anchor = nextIndex + 1 >= l2 ? null : c2[nextIndex + 1].el;
 
         if (newIndexToOldIndexMap[i] === 0) {
+          // 需要新增节点
           patch(null, nextChild, container, parent, anchor);
         } else if (moved) {
           if (j < 0 || i !== increasingNewIndexSequence[j]) {

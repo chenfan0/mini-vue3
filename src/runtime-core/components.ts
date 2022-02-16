@@ -18,6 +18,8 @@ export function createComponentInstance(vnode, parent) {
     provides: parent ? parent.provides : {},
     isMounted: false,
     subTree: {},
+    next: null,
+    update: null,
     emit: () => {},
   };
 

@@ -7,5 +7,6 @@ import { createApp } from "../../lib/mini-vue.esm.js";
 // import App from "./provide_inject/App.js";
 // import { App } from "./update_props/App.js";
 // import { App } from "./update_children/App.js";
-import { App } from "./update_children/Diff.js";
+// import { App } from "./update_children/Diff.js";
+import { App } from "./update_component/App.js";
 createApp(App).mount(document.querySelector("#app"));
