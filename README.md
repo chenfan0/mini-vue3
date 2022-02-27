@@ -15,6 +15,7 @@
 - [x] proxyRefs
 - [x] computed
 - [x] effect
+- [x] watch
 ### runtime-core
 - [x] 初始化Component主流程
 - [x] 初始化Element主流程
