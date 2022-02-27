@@ -1,4 +1,4 @@
-import { camelize, capitalize, handleEventName } from "../shared/index";
+import { camelize, handleEventName } from "../shared/index";
 
 export function emit(instance, event, ...args) {
   const { props } = instance;

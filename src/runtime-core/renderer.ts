@@ -89,8 +89,7 @@ export function createRenderer(options) {
           vnode.el = subTree.el;
           instance.isMounted = true;
         } else {
-          console.log("update");
-
+          debugger;
           // next是新的虚拟节点，vnode是旧的虚拟节点
           const { next, vnode } = instance;
           if (next) {

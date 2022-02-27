@@ -32,7 +32,6 @@ export function setupComponent(instance) {
   const rawProps = instance.vnode.props;
 
   initProps(instance, rawProps);
-  // TODO
   initSlots(instance, instance.vnode.children);
   setupStatefulComponent(instance);
 }

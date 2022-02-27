@@ -6,13 +6,13 @@ const targetMap = new WeakMap();
 
 export class ReactiveEffect {
   // effect传递的第一个参数
-  private _fn: () => void;
+  private _fn: (...args) => void;
   // effect传递的第二个对象的scheduler属性。如果有传该参数，则trigger是会触发该函数
   // 调用stop函数会执行该函数
   onStop?: () => void;
   // 该变量用来记录是否调过stop函数
   active = true;
-  // 收集该该effect的dep
+  // 收集该effect的dep
   deps: any[] = [];
 
   constructor(fn, public scheduler?) {
@@ -20,13 +20,15 @@ export class ReactiveEffect {
     this.scheduler = scheduler;
   }
 
-  run() {
+  run(...args) {
     activeEffect = this;
     if (!this.active) {
-      return this._fn();
+      return this._fn(...args);
     }
+
     shouldTrack = true;
-    const res = this._fn();
+
+    const res = this._fn(...args);
     shouldTrack = false;
     return res;
   }

@@ -9,6 +9,7 @@ export function initSlots(instance, children) {
 
     for (const slot in children) {
       const value = children[slot];
+
       children[slot] = (props) => normalizeSlotValue(value(props));
     }
   }

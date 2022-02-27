@@ -8,7 +8,7 @@ import { createApp } from "../../lib/mini-vue.esm.js";
 // import { App } from "./update_props/App.js";
 // import { App } from "./update_children/App.js";
 // import { App } from "./update_children/Diff.js";
-// import { App } from "./update_component/App.js";
-import { App } from "./nextTick/App.js";
+import { App } from "./update_component/App.js";
+// import { App } from "./nextTick/App.js";
 
 createApp(App).mount(document.querySelector("#app"));
