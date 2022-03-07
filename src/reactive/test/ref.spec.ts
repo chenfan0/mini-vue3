@@ -148,13 +148,8 @@ describe("ref", () => {
 
   test('toRefs should warn on plain object', () => {
     toRefs({})
-    // expect(`toRefs() expects a reactive object`).toHaveBeenWarned()
   })
 
-  // test('toRefs should warn on plain array', () => {
-  //   toRefs([])
-  //   expect(`toRefs() expects a reactive object`).toHaveBeenWarned()
-  // })
 
   test('toRefs reactive array', () => {
     const arr = reactive(['a', 'b', 'c'])
