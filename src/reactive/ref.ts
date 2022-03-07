@@ -1,5 +1,5 @@
 import { trackEffects, triggerEffects, isTracking } from "./effect";
-import { reactive } from "./reactive";
+import { reactive, isProxy } from "./reactive";
 
 import { hasChange, isObject } from "../shared/index";
 
@@ -7,7 +7,7 @@ class RefImplement {
   private _value;
   private deps;
   private _rawValue;
-  public __v_isRef = true;
+  public readonly __v_isRef = true;
 
   constructor(value) {
     this._rawValue = value;
@@ -61,4 +61,34 @@ export function proxyRefs(objWithRefs) {
       return Reflect.set(target, key, newValue, receiver);
     },
   });
+}
+
+class ObjRefImple {
+  public readonly __v_isRef = true;
+
+  constructor(private readonly _object, private readonly _key) { }
+  
+  get value() {
+    return this._object[this._key]
+  }
+
+  set value(newVal) {
+    this._object[this._key] = newVal
+  }
+}
+
+export function toRef(object, key) {
+  const val = object[key];
+  return isRef(val) ? val : new ObjRefImple(object, key);
+}
+
+export function toRefs(object) {
+  if (!isProxy(object)) {
+    console.warn(`toRefs() expects a reactive object but received a plain one.`)
+  }
+  const ret = Array.isArray(object) ? new Array(object.length) : {}
+  for (const key in object) {
+    ret[key] = isRef(object[key]) ? object[key] : new ObjRefImple(object, key)
+  }
+  return ret
 }

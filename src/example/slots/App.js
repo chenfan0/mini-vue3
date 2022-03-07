@@ -1,4 +1,8 @@
-import { h, createTextVNode } from "../../../lib/mini-vue.esm.js";
+import {
+  h,
+  createTextVNode,
+  createRenderer,
+} from "../../../lib/mini-vue.esm.js";
 import Foo from "./Foo.js";
 
 export default {

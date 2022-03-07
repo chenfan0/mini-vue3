@@ -89,7 +89,6 @@ export function createRenderer(options) {
           vnode.el = subTree.el;
           instance.isMounted = true;
         } else {
-          debugger;
           // next是新的虚拟节点，vnode是旧的虚拟节点
           const { next, vnode } = instance;
           if (next) {
@@ -150,9 +149,9 @@ export function createRenderer(options) {
     // 将el赋值给n2，因为下次patch n2就是n1
     const el = (n2.el = n1.el);
 
-    patchChildren(n1, n2, el, parent, anchor);
-
     patchProps(p1, p2, el);
+
+    patchChildren(n1, n2, el, parent, anchor);
   }
 
   function patchChildren(n1, n2, container, parent, anchor) {
