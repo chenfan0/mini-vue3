@@ -9,6 +9,7 @@ import {
 export const enum ReactiveFlags {
   IS_REACTIVE = "__v_isReactive",
   IS_READONLY = "__v_isReadonly",
+  RAW = '__v_raw'
 }
 
 function createReactiveObj(raw, baseHandlers) {
@@ -44,4 +45,9 @@ export function isReadonly(value) {
 
 export function isProxy(value) {
   return isReactive(value) || isReadonly(value);
+}
+
+export function toRaw(observed) {
+  const raw = observed && observed[ReactiveFlags.RAW]
+  return raw ? raw : observed
 }
