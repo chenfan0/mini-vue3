@@ -39,10 +39,16 @@ function createSetter() {
 const get = createGetter();
 const set = createSetter();
 const readonlyGet = createGetter(true);
+const shallowReactiveGet = createGetter(false, true);
 const shallowReadonlyGet = createGetter(true, true);
 
 export const mutableHandlers = {
   get,
+  set,
+};
+
+export const shallowReactiveHandlers = {
+  get: shallowReactiveGet,
   set,
 };
 

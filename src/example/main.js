@@ -1,4 +1,4 @@
-import { createApp } from "../../lib/mini-vue.esm.js";
+import { createApp, h } from "../../lib/mini-vue.esm.js";
 
 // import { App } from "./App.js";
 // import { App } from "./emit/App.js";
@@ -7,8 +7,17 @@ import { createApp } from "../../lib/mini-vue.esm.js";
 // import App from "./provide_inject/App.js";
 // import { App } from "./update_props/App.js";
 // import { App } from "./update_children/App.js";
-import { App } from "./update_children/Diff.js";
+// import { App } from "./update_children/Diff.js";
 // import { App } from "./update_component/App.js";
 // import { App } from "./nextTick/App.js";
+import App from "./app.component/App.js";
 
-createApp(App).mount(document.querySelector("#app"));
+const app = createApp(App);
+
+app.component("myComponent", {
+  render() {
+    return h("h1", {}, "my-component");
+  },
+});
+
+app.mount(document.querySelector("#app"));

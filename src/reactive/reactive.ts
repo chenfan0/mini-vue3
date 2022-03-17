@@ -1,6 +1,7 @@
 import { isObject } from "../shared/index";
 import {
   mutableHandlers,
+  shallowReactiveHandlers,
   readonlyHandlers,
   shallowReadonlyHandlers,
 } from "./baseHandlers";
@@ -19,6 +20,10 @@ function createReactiveObj(raw, baseHandlers) {
 
 export function reactive(raw: any) {
   return createReactiveObj(raw, mutableHandlers);
+}
+
+export function shallowReactive(raw: any) {
+  return createReactiveObj(raw, shallowReactiveHandlers);
 }
 
 export function readonly(raw) {

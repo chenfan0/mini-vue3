@@ -1,5 +1,5 @@
 import { effect } from "../effect";
-import { reactive, isReactive, isProxy } from "../reactive";
+import { reactive, isReactive, isProxy, shallowReactive } from "../reactive";
 
 describe("reactive", () => {
   it("happy path", () => {
@@ -30,5 +30,16 @@ describe("reactive", () => {
     obj.foo = 1;
     expect(dummy).toBe(1);
     expect(obj.bar).toBe(10);
+  });
+
+  it("shallowRef", () => {
+    const obj = {
+      foo: {
+        name: 123,
+      },
+    };
+    const shallow: any = shallowReactive(obj);
+    expect(isReactive(shallow)).toBe(true);
+    expect(isReactive(shallow.foo)).toBe(false);
   });
 });

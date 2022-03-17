@@ -9,6 +9,7 @@ export function createVNode(type, props: any = {}, children: any = []) {
     type,
     props,
     children,
+    appContext: null,
     component: null, // 组件实例
     key: props.key || undefined,
     el: null,
@@ -27,6 +28,7 @@ export function createVNode(type, props: any = {}, children: any = []) {
       vnode.shapeFlag |= ShapeFlags.SLOT_CHILDREN;
     }
   }
+
   return vnode;
 }
 

@@ -6,7 +6,7 @@ import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlots";
 import { proxyRefs } from "../index";
 
-let currentInstance = null;
+export let currentInstance = null;
 
 export function createComponentInstance(vnode, parent) {
   const component = {

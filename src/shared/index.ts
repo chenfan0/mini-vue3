@@ -32,4 +32,8 @@ export const handleEventName = (name: string) => {
   return name ? "on" + capitalize(name) : "";
 };
 
+export function warn(...args) {
+  console.warn(...args);
+}
+
 export const EMPTY_OBJ = {};
