@@ -37,3 +37,11 @@ export function warn(...args) {
 }
 
 export const EMPTY_OBJ = {};
+
+export function def(obj, key, value) {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    value,
+  });
+}

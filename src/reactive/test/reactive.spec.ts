@@ -1,5 +1,5 @@
 import { effect } from "../effect";
-import { reactive, isReactive, isProxy, shallowReactive, toRaw } from "../reactive";
+import { reactive, isReactive, isProxy, shallowReactive, toRaw, markRaw } from "../reactive";
 
 describe("reactive", () => {
   it("happy path", () => {
@@ -48,5 +48,13 @@ describe("reactive", () => {
     const observed = reactive(original)
     expect(toRaw(observed)).toBe(original)
     expect(toRaw(original)).toBe(original)
+  })
+
+  it('markRaw', () => {
+    const foo = markRaw({})
+    expect(isReactive(reactive(foo))).toBe(false)
+
+    const bar = reactive({ foo })
+    expect(isReactive(bar.foo)).toBe(false)
   })
 });
