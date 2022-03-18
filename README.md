@@ -4,6 +4,7 @@
 ## 目前实现功能
 ### reactivity
 - [x] reactive
+- [x] shallowReactive 
 - [x] readonly
 - [x] shallowReadonly
 - [x] isReactive
@@ -12,6 +13,7 @@
 - [x] ref
 - [x] isRef
 - [x] unRef
+- [X] toRaw
 - [x] proxyRefs
 - [x] computed
 - [x] effect
