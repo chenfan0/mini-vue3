@@ -1,8 +1,28 @@
 import { extend } from "../shared/index";
 
-let activeEffect: ReactiveEffect;
+// 这里使用一个变量保存活跃的effect，
+// 但是如果存在effect嵌套的情况，就会有问题，需要把这个变成一个栈。
+let activeEffect: ReactiveEffect | undefined;
+const effectStack: ReactiveEffect[] = [];
 let shouldTrack;
 const targetMap = new WeakMap();
+
+const trackStack: boolean[] = [];
+
+export function pauseTracking() {
+  trackStack.push(shouldTrack);
+  shouldTrack = false;
+}
+
+export function enableTracking() {
+  trackStack.push(shouldTrack);
+  shouldTrack = true;
+}
+
+export function resetTracking() {
+  const last = trackStack.pop();
+  shouldTrack = last === undefined ? true : last;
+}
 
 export class ReactiveEffect {
   // effect传递的第一个参数
@@ -21,16 +41,22 @@ export class ReactiveEffect {
   }
 
   run(...args) {
-    activeEffect = this;
     if (!this.active) {
       return this._fn(...args);
     }
+    if (!effectStack.includes(this)) {
+      effectStack.push((activeEffect = this));
 
-    shouldTrack = true;
+      // 
+      enableTracking()
 
-    const res = this._fn(...args);
-    shouldTrack = false;
-    return res;
+      const res = this._fn(...args);
+      resetTracking()
+      effectStack.pop();
+      const n = effectStack.length;
+      activeEffect = n > 0 ? effectStack[n - 1] : undefined;
+      return res;
+    }
   }
 
   stop() {
@@ -68,7 +94,8 @@ export function track(target, key) {
 
 export function trackEffects(dep) {
   dep.add(activeEffect);
-  activeEffect.deps.push(dep);
+
+  activeEffect!.deps.push(dep);
 }
 
 export function isTracking() {
@@ -79,6 +106,7 @@ export function trigger(target, key) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
   const dep = depsMap.get(key);
+
   triggerEffects(dep);
 }
 

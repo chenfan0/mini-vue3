@@ -101,4 +101,31 @@ describe("effect", () => {
     stop(runner);
     expect(onStop).toBeCalledTimes(1);
   });
+
+  
+  it("nested effect", () => {
+    let dummy;
+    let dummy1;
+    let obj = reactive({
+      count: 1,
+    });
+
+    // effect1 effect2
+    // 执行effect1过程又会
+    effect(() => {
+      console.log(111);
+      effect(() => {
+        console.log(222);
+
+        dummy = obj.count;
+      });
+      dummy1 = obj.count;
+    });
+
+    expect(dummy).toBe(1);
+    expect(dummy1).toBe(1);
+    obj.count = 2;
+    expect(dummy).toBe(2);
+    expect(dummy1).toBe(2);
+  });
 });
