@@ -10,7 +10,7 @@ function patchProps(el, key, val) {
   const isOn = (key: string) => /^on[A-Z]/.test(key);
   // 处理事件
   if (isOn(key)) {
-    const event = key.slice(2).toLocaleLowerCase();
+    const event = key.slice(2).toLowerCase();
     el.addEventListener(event, val);
   } else if (val !== undefined && val !== null) {
     el.setAttribute(key, val);

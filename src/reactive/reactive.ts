@@ -17,7 +17,7 @@ function getTargetType(raw) {
   return raw[ReactiveFlags.SKIP];
 }
 
-function createReactiveObj(raw, baseHandlers) {
+function createReactiveObj(raw: any, baseHandlers) {
   if (!isObject(raw)) {
     console.error(`${raw} 必须是一个对象`);
   }
