@@ -23,6 +23,7 @@ describe("Parse", () => {
       expect(ast.children[0]).toStrictEqual({
         type: NODE_TYPES.ELEMENT,
         tag: "div",
+        children: [],
       });
     });
   });
@@ -35,6 +36,60 @@ describe("Parse", () => {
         type: NODE_TYPES.TEXT,
         content: "some text",
       });
+    });
+  });
+
+  test("hello word", () => {
+    const ast = baseParse("<p>hi,{{message}}</p>");
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NODE_TYPES.ELEMENT,
+      tag: "p",
+      children: [
+        {
+          type: NODE_TYPES.TEXT,
+          content: "hi,",
+        },
+        {
+          type: NODE_TYPES.INTERPOLATION,
+          content: {
+            type: NODE_TYPES.SIMPLE_EXPRESSION,
+            content: "message",
+          },
+        },
+      ],
+    });
+  });
+
+  test("lack end tag", () => {
+    expect(() => baseParse("<p><div></p>")).toThrow('div标签没有结束标签');
+  });
+
+  test("nested element", () => {
+    const ast = baseParse("<div><p>hi,</p>{{message}}</div>");
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NODE_TYPES.ELEMENT,
+      tag: "div",
+      children: [
+        {
+          type: NODE_TYPES.ELEMENT,
+          tag: "p",
+          children: [
+            {
+              type: NODE_TYPES.TEXT,
+              content: "hi,",
+            },
+          ],
+        },
+        {
+          type: NODE_TYPES.INTERPOLATION,
+          content: {
+            type: NODE_TYPES.SIMPLE_EXPRESSION,
+            content: "message",
+          },
+        },
+      ],
     });
   });
 });
