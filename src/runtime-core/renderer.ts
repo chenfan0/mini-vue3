@@ -265,7 +265,7 @@ export function createRenderer(options) {
         const key = preVnode.key;
         let newIndex;
 
-        if (key !== null || key !== undefined) {
+        if (key !== null || key !== undefined) { 
           newIndex = keyToNewIndexMap.get(key);
         } else {
           for (let j = s2; j <= e2; j++) {

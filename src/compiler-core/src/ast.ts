@@ -1,0 +1,4 @@
+export const enum NODE_TYPES {
+  INTERPOLATION,
+  SIMPLE_EXPRESSION
+}

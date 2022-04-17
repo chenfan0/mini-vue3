@@ -1,4 +1,4 @@
-import { h, renderSlots } from "../../../lib/mini-vue.esm.js";
+import { h, renderSlots } from "../../lib/mini-vue.esm.js";
 
 export default {
   setup(props) {},

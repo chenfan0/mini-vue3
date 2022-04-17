@@ -2,7 +2,7 @@ import {
   h,
   createTextVNode,
   createRenderer,
-} from "../../../lib/mini-vue.esm.js";
+} from "../../lib/mini-vue.esm.js";
 import Foo from "./Foo.js";
 
 export default {
