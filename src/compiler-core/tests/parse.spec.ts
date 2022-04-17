@@ -1,5 +1,5 @@
-import { NODE_TYPES } from '../src/ast';
-import { baseParse } from '../src/parse'
+import { NODE_TYPES } from "../src/ast";
+import { baseParse } from "../src/parse";
 
 describe("Parse", () => {
   describe("interpolation", () => {
@@ -22,7 +22,18 @@ describe("Parse", () => {
 
       expect(ast.children[0]).toStrictEqual({
         type: NODE_TYPES.ELEMENT,
-        tag: 'div'
+        tag: "div",
+      });
+    });
+  });
+
+  describe("text", () => {
+    test("simple text", () => {
+      const ast: any = baseParse("some text");
+
+      expect(ast.children[0]).toStrictEqual({
+        type: NODE_TYPES.TEXT,
+        content: "some text",
       });
     });
   });
