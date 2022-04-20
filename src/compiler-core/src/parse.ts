@@ -19,7 +19,9 @@ function createParseContext(content: string) {
 
 function createRoot(children) {
   return {
+    helpers: [],
     children,
+    type: NODE_TYPES.ROOT
   };
 }
 
